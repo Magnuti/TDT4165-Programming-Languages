@@ -45,64 +45,37 @@ end
 % TODO
 % Assuming input is valid, add code later
 fun {InterpretWithStack Tokens Stack}
-    if {ContainsOperators Tokens} then
-
+    %{System.showInfo '.'}
+    %{System.show Tokens}
+    %{System.show Stack}
+    if Tokens == nil then
+        {List.reverse Stack}
+    elseif {ContainsOperators Tokens} then
         if {Record.label Tokens.1} == 'number' then
-            if Stack == [nil] then
-
-                %{System.show '-'}
-                %{System.show Tokens}
-                %{System.show Stack}
-
-                {InterpretWithStack Tokens.2 [Tokens.1]}
-            else
-                {InterpretWithStack Tokens.2 {Append [Tokens.1] Stack}}
-            end
+            {InterpretWithStack Tokens.2 {Append [Tokens.1] Stack}}
         elseif {Record.label Tokens.1} == 'command' then
             if Tokens.1.1 == 'print' then
                 {System.show {List.reverse Stack}}
-                if Tokens.2 == nil then
-                    {InterpretWithStack Stack [nil]}
-                else
-                    {InterpretWithStack Tokens.2 Stack}
-                end
+                {InterpretWithStack Tokens.2 Stack}
             elseif Tokens.1.1 == 'duplicatetop' then
-                local NewStack in
-                    NewStack = {Append [Stack.1] Stack}
-                    if Tokens.2 == nil then
-                        {InterpretWithStack {List.reverse NewStack} [nil]}
-                    else
-                        {InterpretWithStack Tokens.2 NewStack}
-                    end
-                end
+                {InterpretWithStack Tokens.2 {Append [Stack.1] Stack}}
             elseif Tokens.1.1 == 'inverttop' then
                 local NewStack TopStackValue in
                     TopStackValue = ~Stack.1.1
                     NewStack = {Append [number(TopStackValue)] {Drop Stack 1}}
-                    if Tokens.2 == nil then
-                        {InterpretWithStack {List.reverse NewStack} [nil]}
-                    else
-                        {InterpretWithStack Tokens.2 NewStack}
-                    end
+                    {InterpretWithStack Tokens.2 NewStack}
                 end
             elseif Tokens.1.1 == 'multiinvert' then
                 local NewStack TopStackValue in
                     TopStackValue =  1.0 / Stack.1.1 % Assuming float
                     NewStack = {Append [number(TopStackValue)] {Drop Stack 1}}
-                    if Tokens.2 == nil then
-                        {InterpretWithStack NewStack [nil]}
-                    else
-                        {InterpretWithStack Tokens.2 NewStack}
-                    end
+                    {InterpretWithStack Tokens.2 NewStack}
                 end
             else
-                {System.show 'Unknown command'}
                 raise 'Illegal command' end
             end
-        % Add elseif for operator, else raise exception
-        else
-            local Number NewStack StackAfterDrop in
-
+        elseif {Record.label Tokens.1} == 'operator' then
+            local Number NewStack in
                 if Tokens.1.type == 'plus' then
                     Number = number(Stack.2.1.1 + Stack.1.1)
                 elseif Tokens.1.type == 'minus' then
@@ -112,30 +85,20 @@ fun {InterpretWithStack Tokens Stack}
                 elseif Tokens.1.type == 'divide' then
                     Number = number(Stack.2.1.1 / Stack.1.1) % Assuming float
                 else
-                    raise 'Illegal operator' end
+                    raise 'Unknown operator' end
                 end
-
-                StackAfterDrop = {Drop Stack 2}
-                if StackAfterDrop == nil then
-                    NewStack = [Number]
-                else
-                    NewStack = {Append [Number] StackAfterDrop}
-                end
-
-                %{System.show NewStack}
-                %{System.show StackAfterDrop}
-
+                NewStack = {Append [Number] {Drop Stack 2}}
                 {InterpretWithStack {Append {List.reverse NewStack} Tokens.2} [nil]}
             end
+        else
+            raise 'Unknown record' end
         end
     else
-        %{System.showInfo 'Value of RPN:'}
         % Reverse the list to get stack on top
         if Stack == [nil] then
             Tokens
         else
             {Append {List.reverse Stack} Tokens}
-            %{List.reverse {Append Tokens Stack}} % Fix this
         end
     end
 end

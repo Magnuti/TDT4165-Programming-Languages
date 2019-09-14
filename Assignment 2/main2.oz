@@ -57,17 +57,17 @@ define
     proc {TestF}
         {System.showInfo '\n--- Test F ---'}
         {System.showInfo 'Should be:'}
-        {System.show [number(1) number(~5)]}
+        {System.show [number(1) number(~20)]}
         {System.showInfo 'Actual'}
-        {System.show {Interpret {Tokenize {Lex "1 2 3 + i"}}}}
+        {System.show {Interpret {Tokenize {Lex "1 10 i 30 + i"}}}}
     end
 
     proc {TestG}
         {System.showInfo '\n--- Test G ---'}
         {System.showInfo 'Should be:'}
-        {System.show [number(1.0/6.0)]}
+        {System.show [number(1.0/4.5)]}
         {System.showInfo 'Actual'}
-        {System.show {Interpret {Tokenize {Lex "1 2 + 3 + ^"}}}}
+        {System.show {Interpret {Tokenize {Lex "1 2 ^ + 3 + ^"}}}}
     end
 
     %Input = "15 7 1 1 + - / 3 * 2 1 1 + + -" % = 5 from Wikipedia
@@ -81,8 +81,8 @@ define
     {TestC}
     {TestD}
     {TestE}
-    {TestF} % try operator in middle
-    {TestG} % try operator in middle
+    {TestF}
+    {TestG}
 
     {PrintList {Infix {Tokenize {Lex "3.0 10.0 9.0 * - 0.3 +"}}}}
     {PrintList {Infix {Tokenize {Lex "1.0 2.0 3.0 + -"}}}}
