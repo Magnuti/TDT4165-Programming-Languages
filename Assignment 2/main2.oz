@@ -70,11 +70,13 @@ define
         {System.show {Interpret {Tokenize {Lex "1 2 ^ + 3 + ^"}}}}
     end
 
-    %Input = "15 7 1 1 + - / 3 * 2 1 1 + + -" % = 5 from Wikipedia
-    %Input = "1 2 + 3"
-    %{PrintList {Lex Input}}
-    %{System.show {Tokenize {Lex Input}}}
-    %{System.show {Interpret {Tokenize {Lex Input}}}}
+    proc {Test3A}
+        {System.showInfo '\n--- Test 3A ---'}
+        {System.showInfo 'Should be:'}
+        {System.showInfo "( ( 3 - 10 * 9 ) + 0.3 )"}
+        {System.showInfo 'Actual'}
+        {PrintList {Infix {Tokenize {Lex "3.0 10.0 9.0 * - 0.3 +"}}}}
+    end
 
     {TestA}
     {TestB}
@@ -83,9 +85,9 @@ define
     {TestE}
     {TestF}
     {TestG}
+    {Test3A}
 
-    {PrintList {Infix {Tokenize {Lex "3.0 10.0 9.0 * - 0.3 +"}}}}
-    {PrintList {Infix {Tokenize {Lex "1.0 2.0 3.0 + -"}}}}
+    {System.showInfo ''}
     {PrintList {Infix {Tokenize {Lex "1 2 + ^"}}}}
     {PrintList {Infix {Tokenize {Lex "1 2 i +"}}}}
 

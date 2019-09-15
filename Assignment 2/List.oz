@@ -37,13 +37,13 @@ fun {Drop List Count}
 end
 
 fun {Member List Element}
-    if List.1 == Element then
-        true
+    if List == nil then
+        false
     else
-        if {Length List} > 1 then
-            {Member List.2 Element}
+        if List.1 == Element then
+            true
         else
-            false
+            {Member List.2 Element}
         end
     end
 end

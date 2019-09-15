@@ -42,12 +42,7 @@ fun {Interpret Tokens}
     {InterpretWithStack Tokens [nil]}
 end
 
-% TODO
-% Assuming input is valid, add code later
 fun {InterpretWithStack Tokens Stack}
-    %{System.showInfo '.'}
-    %{System.show Tokens}
-    %{System.show Stack}
     if Tokens == nil then
         {List.reverse Stack}
     elseif {ContainsOperators Tokens} then
@@ -75,15 +70,22 @@ fun {InterpretWithStack Tokens Stack}
                 raise 'Illegal command' end
             end
         elseif {Record.label Tokens.1} == 'operator' then
-            local Number NewStack in
+            local Number NewStack A B in
+                try
+                    A = Stack.2.1.1
+                    B = Stack.1.1
+                catch error(...) then
+                    raise 'Invalid postfix notation' end
+                end
+
                 if Tokens.1.type == 'plus' then
-                    Number = number(Stack.2.1.1 + Stack.1.1)
+                    Number = number(A + B)
                 elseif Tokens.1.type == 'minus' then
-                    Number = number(Stack.2.1.1 - Stack.1.1)
+                    Number = number(A - B)
                 elseif Tokens.1.type == 'multiply' then
-                    Number = number(Stack.2.1.1 * Stack.1.1)
+                    Number = number(A * B)
                 elseif Tokens.1.type == 'divide' then
-                    Number = number(Stack.2.1.1 / Stack.1.1) % Assuming float
+                    Number = number(A / B) % Assuming float
                 else
                     raise 'Unknown operator' end
                 end
@@ -124,9 +126,6 @@ end
 
 % Each expression record in the ExpressionStack represent an (...)
 fun {InfixInternal Tokens ExpressionStack}
-    %{System.show '-'}
-    %{System.show Tokens}
-    %{System.show ExpressionStack}
     if Tokens == nil then
         ExpressionStack.1.1
     else
